@@ -1,4 +1,5 @@
 require 'test_helper'
+require 'pry'
 
 describe "Panel" do
   let(:p1) do 
@@ -10,6 +11,22 @@ describe "Panel" do
     }
   end
   let(:panel) { Panel.from_hash(p1) }
+	let(:panel_list) { 3.times { Panel.from_hash(p1) }}
+
+	context "#self.all" do
+		it "should return all slides" do
+			size = panel_list
+      Panel.all.size.must_equal size
+		end
+	end
+
+	context "#self.clear" do
+		it "should return all slides" do
+			size = panel_list
+			Panel.clear
+      Panel.all.size.must_equal 0
+		end
+	end
 
   context "#from_hash" do
     it "should create a new panel from hash" do
@@ -18,8 +35,9 @@ describe "Panel" do
     end
     
     it "should add_panel to panels array" do
-      3.times { Panel.from_hash(p1) }
-      Panel.all.size.must_equal 3
+			size = panel_list
+			Panel.from_hash(p1) 
+      Panel.all.size.must_equal size + 1
     end
 
     context "validations" do
@@ -54,4 +72,16 @@ describe "Panel" do
       panel.attributes.must_equal p1
     end
   end
+
+  context "#to_json" do
+		it "must output the original hash as json" do
+			panel.to_json.must_equal p1.to_json
+		end	
+		
+		it "must output all the class instances as json" do
+			panel_list
+			Panel.to_json.must_equal Panel.all.map(&:to_json)
+		end
+  end
+
 end

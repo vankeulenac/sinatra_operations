@@ -1,15 +1,32 @@
 require_relative './panel_validator'
+require 'json'
+require 'sdbm'
 
 Panel = Struct.new(:title, :subtitle, :content, :order) do
 
-  PANELS = []
+	DB = SDBM.open('panels.dbm') 
+
+	def self.panels
+		DB['panels'] ||= ""
+	end
+
+	def self.add_panel(arg)
+		if panels
+			DB['panels'] += "#{arg}\n"
+		end
+	end
 
   def self.all
-    PANELS
+		if self.panels == ""
+			[]
+		else
+			panels = self.panels.split("\n")
+			panels.map { |panel| JSON.parse(panel) }
+		end
   end
 
   def self.clear
-    PANELS.clear
+		DB['panels'] = ""
   end
 
   def self.validator
@@ -22,9 +39,13 @@ Panel = Struct.new(:title, :subtitle, :content, :order) do
     attributes.each do |key, value|
       instance[key] = value
     end
-    PANELS << instance
+    self.add_panel instance.to_json
     instance
   end
+
+	def self.to_json
+		all.map(&:to_json)
+	end
 
   def attributes
     result = {}
@@ -33,4 +54,8 @@ Panel = Struct.new(:title, :subtitle, :content, :order) do
     end
     result
   end
+	
+	def to_json
+		self.attributes.to_json
+	end
 end
