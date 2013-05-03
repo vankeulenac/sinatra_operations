@@ -1,30 +1,33 @@
 require_relative './panel_validator'
 require 'json'
 require 'sdbm'
+require 'pstore'
 
 Panel = Struct.new(:title, :subtitle, :content, :order) do
 
   class << self
-
-	  def panels
-      @db ||= SDBM.open('panels.dbm')['[panels']
-	  end
-
-	  def add_panel(arg)
-	    @db += "#{arg}\n\n"
+    def store
+      store ||= PStore.new("panels.store") do |db|
+        db["panels"] = [] unless db["panels"]
+      end
+    end
+	  
+    def add_panel(arg)
+      store.transaction do |db|
+        db["panels"] << arg
+      end
 	  end
 
     def all
-      if self.panels == ""
-        []
-      else
-        panels = self.panels.split("\n\n")
-        panels.map { |panel| JSON.parse(panel) }
+      store.transaction do |db|
+        db["panels"]
       end
     end
 
     def clear
-      @db = ""
+      store.transaction do |db|
+        db["panels"] = []
+      end
     end
 
     def validator
@@ -37,14 +40,13 @@ Panel = Struct.new(:title, :subtitle, :content, :order) do
       attributes.each do |key, value|
         instance[key] = value
       end
-      self.add_panel instance.to_json
+      self.add_panel instance
       instance
     end
 
     def to_json
       all.map(&:to_json)
     end
-
   end
 
   def attributes
