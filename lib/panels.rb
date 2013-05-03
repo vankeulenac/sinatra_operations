@@ -4,48 +4,48 @@ require 'sdbm'
 
 Panel = Struct.new(:title, :subtitle, :content, :order) do
 
-	DB = SDBM.open('panels.dbm') 
+  class << self
 
-	def self.panels
-		DB['panels'] ||= ""
-	end
+	  def panels
+      @db ||= SDBM.open('panels.dbm')['[panels']
+	  end
 
-	def self.add_panel(arg)
-		if panels
-			DB['panels'] += "#{arg}\n"
-		end
-	end
+	  def add_panel(arg)
+	    @db += "#{arg}\n\n"
+	  end
 
-  def self.all
-		if self.panels == ""
-			[]
-		else
-			panels = self.panels.split("\n")
-			panels.map { |panel| JSON.parse(panel) }
-		end
-  end
-
-  def self.clear
-		DB['panels'] = ""
-  end
-
-  def self.validator
-    PanelValidator
-  end
-
-  def self.from_hash attributes
-    validator.check_attributes attributes
-    instance = self.new
-    attributes.each do |key, value|
-      instance[key] = value
+    def all
+      if self.panels == ""
+        []
+      else
+        panels = self.panels.split("\n\n")
+        panels.map { |panel| JSON.parse(panel) }
+      end
     end
-    self.add_panel instance.to_json
-    instance
-  end
 
-	def self.to_json
-		all.map(&:to_json)
-	end
+    def clear
+      @db = ""
+    end
+
+    def validator
+      PanelValidator
+    end
+
+    def from_hash attributes
+      validator.check_attributes attributes
+      instance = self.new
+      attributes.each do |key, value|
+        instance[key] = value
+      end
+      self.add_panel instance.to_json
+      instance
+    end
+
+    def to_json
+      all.map(&:to_json)
+    end
+
+  end
 
   def attributes
     result = {}
