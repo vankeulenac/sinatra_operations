@@ -1,36 +1,7 @@
 require_relative './panel_validator'
+require_relative './panel_db'
 require 'json'
-require 'sdbm'
-require 'pstore'
 require 'forwardable'
-
-class PanelDB
-  class << self
-   def store
-      store ||= PStore.new("panels.store") do |db|
-        db["panels"] = [] unless db["panels"]
-      end
-    end
-    
-   def add_panel(arg)
-      store.transaction do |db|
-        db["panels"] << arg
-      end
-	  end
-
-    def all
-      store.transaction do |db|
-        db["panels"]
-      end
-    end
-
-    def clear
-      store.transaction do |db|
-        db["panels"] = []
-      end
-    end
-  end
-end
 
 Panel = Struct.new(:title, :subtitle, :content, :order) do
   extend Forwardable

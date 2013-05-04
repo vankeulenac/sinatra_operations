@@ -21,7 +21,7 @@ describe "Panel" do
 	end
 
 	context "#self.clear" do
-		it "should return all slides" do
+		it "should return no slides" do
 			size = panel_list
 			Panel.clear
       Panel.all.size.must_equal 0
