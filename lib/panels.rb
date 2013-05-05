@@ -29,7 +29,7 @@ Panel = Struct.new(:title, :subtitle, :content, :order) do
     end
 
     def to_json
-      all.map(&:to_json)
+      self.all.map(&:to_json)
     end
   end
 end
