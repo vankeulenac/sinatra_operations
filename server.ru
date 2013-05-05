@@ -1,3 +1,3 @@
 require './app'
  
-run PanelApp.run!
+run PanelApp
