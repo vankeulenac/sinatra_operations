@@ -14,16 +14,8 @@ Panel = Struct.new(:title, :subtitle, :content, :order) do
     end
   end
 
-  def attributes
-    result = {}
-    members.each do |name|
-      result[name] = self[name]
-    end
-    result
-  end
-	
 	def to_json
-		self.attributes.to_json
+		self.to_h.to_json
 	end
 
   class << self

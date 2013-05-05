@@ -67,12 +67,6 @@ describe "Panel" do
     end
   end
 
-  context "#attributes" do
-    it "must have the same attributes as hash" do
-      panel.attributes.must_equal p1
-    end
-  end
-
   context "#to_json" do
 		it "must output the original hash as json" do
 			panel.to_json.must_equal p1.to_json
