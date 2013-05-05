@@ -1,13 +1,14 @@
 require 'sinatra/base'
-require_relative './lib/panels'
-
+# require_relative './lib/panels'
+# 
 class PanelApp < Sinatra::Base
 
   set connections: []
 
   get "/" do
-    content_type :json
-    @panels = Panel.to_json
+    # content_type :json
+    # @panels = Panel.to_json
+    "HELLO"
   end
   
   get "/stream" do
