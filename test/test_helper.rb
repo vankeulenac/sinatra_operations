@@ -26,4 +26,15 @@ class MiniTest::Spec
     Panel.clear
   end
 
+  let(:p1) do 
+    {
+      title: "Title",
+      subtitle: "Great Slide",
+      content: "This is an amazing slide",
+      order: 1
+    }
+  end
+  let(:panel) { Panel.new(p1) }
+	let(:panel_list) { 3.times { Panel.from_hash(p1) }}
+
 end
